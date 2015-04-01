@@ -1,4 +1,4 @@
-<apex:page controller="AttachmentUpload" showHeader="false" sidebar="false" standardStylesheets="false" >
+<apex:page controller="AttachmentUpload" doctype="html-5.0" showHeader="false" sidebar="false" standardStylesheets="false" >
 	<!-- This page would be called from a parent page, show this in an iframe. -->
 
 	<apex:stylesheet value="{!URLFOR($Resource.attachmentdemo_resources, 'bootstrapsf1/css/bootstrap.min.css')}"/>
