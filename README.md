@@ -9,12 +9,17 @@ There is one solution out there (using an ActionRegion tag to wrap your buttons/
 
 I also didn't want to redirect the page, so I needed a nice modal where user uploads attachment (like I had before) but they don't know it's through an IFrame.
 
+<a href="http://mkdemos-developer-edition.na17.force.com/apex/AccountDetail?id=001o000000Sp1vS"><strong>Demo Link</strong></a>
+
+
 <strong>KEYS to the solution:</strong> 
 
-  AccountDetail page contains an IFrame with id = "attachmentIFrame"
-    This page also contains the submit button as part of the modal. It fires a javascript function from within the iframe to insert the attachment. 
-    This page also has the close button which is unlimited and able to call an actionFunction which does contain an oncomplete rule (which navigates the user to the attachments tab list).
+<i>AccountDetail page<i>
+- Contains an IFrame with id = "attachmentIFrame"
+- Contains the submit button as part of the modal. It fires a javascript function from within the iframe to insert the attachment.
+- Contains a close button which is unlimited and able to call an actionFunction which does contain an oncomplete rule (which navigates the user to the attachments tab list).
 
-  AttachmentUpload page contains the Apex:InputFile tag, and has an accessible javascript/actionFunction called "processAttachment". This is the function that the parent page will call.
-  
-  By separating the inputFile tag, you can use rerender or oncomplete attributes on the parentpage again, without the need for actionRegion tags (actionRegion may or may not work for you, worth a try).
+<i>AttachmentUpload page</i>
+- Contains the Apex:InputFile tag, and has an accessible javascript/actionFunction called "processAttachment". This is the function that the parent page will call.
+
+By separating the inputFile tag, you can use rerender or oncomplete attributes on the parentpage again, without the need for actionRegion tags (actionRegion may or may not work for you, worth a try).
