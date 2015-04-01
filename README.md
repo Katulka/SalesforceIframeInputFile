@@ -9,7 +9,7 @@ There is one solution out there (using an ActionRegion tag to wrap your buttons/
 
 I also didn't want to redirect the page, so I needed a nice modal where user uploads attachment (like I had before) but they don't know it's through an IFrame.
 
-<a href="http://mkdemos-developer-edition.na17.force.com/apex/AccountDetail?id=001o000000Sp1vS"><strong>Demo Link</strong></a>
+<a href="http://mkdemos-developer-edition.na17.force.com/apex/AccountDetail?id=001o000000Sp1vS" target="_blank"><strong>Demo Link</strong></a>
 
 
 <strong>KEYS to the solution:</strong> 
