@@ -1,0 +1,210 @@
+<apex:page standardController="Account" extensions="AccountDetailExtension" showHeader="false" sidebar="false" standardStylesheets="false">
+
+	<apex:stylesheet value="{!URLFOR($Resource.attachmentdemo_resources, 'bootstrapsf1/css/bootstrap.min.css')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.attachmentdemo_resources, 'jquery/jquery-2.1.3.min.js')}" />
+	<!-- Use bootstrap JS plugin instead of jquery-mobile because jqm and bootstrap conflict 
+	It seems that Bootstrap SF1 was built with Bootstrap V 3.0.1, so include same version js. -->
+	<apex:includeScript value="{!URLFOR($Resource.attachmentdemo_resources, 'bootstrap-resources/bootstrap.min.js')}"/>
+
+
+	<script type="text/javascript">
+    
+		function showNavTab(tabName){
+			$('#navTabs a[href="#' + tabName + '"]').tab('show');
+		}
+
+		// function that handles navigation requests so this can run on SF1 or SF.com
+		function redirectToURL(theURL){
+            if( (typeof sforce != 'undefined') && (sforce.one != null) ) {
+                // Navigate to the sf1 url
+                sforce.one.navigateToURL(theURL);
+            } else {
+                //navigate to standard page
+                window.location.assign(theURL);
+            }
+        }
+
+ 	</script>
+
+	<style>
+	    
+	    .center-pills {
+	        display: flex;
+	        justify-content: center;
+	    }
+
+	    /*push nav tabs closer to header, override*/
+	    .page-header {
+	      margin: 0px;
+	      padding: 20px 14px 0px;
+	    }
+
+	    #navTabs>li>a {
+	      padding: 14px 10px 7px;
+	    }
+
+	    /*match styling of normal button*/
+	    .nav>li>a {
+	      color: #5c7995;
+	      padding: 8px 15px 8px;
+	    }
+
+	    .nav>li>a:focus,.nav>li>a:hover{
+	      color:#44596c;
+	      background-color:#e6e6e6;
+	      border-color:#9aa2a8
+	    }
+
+ 	</style>
+
+	<apex:form id="mainForm">
+
+		<apex:outputPanel id="header">
+
+			<div class="page-header context-account">
+				<div class="container">
+					<h1>{!Account.Name}</h1>
+					<p>{!Account.Type} &middot; Owner: {!Account.Owner.Name}</p>
+				</div>
+
+				<!-- Nav tabs -->    
+				<ul class="nav nav-tabs" id="navTabs">      
+					<li class="active"><a href="#details" data-toggle="tab">Details</a></li>					
+					<li><a href="#attachments" data-toggle="tab">Attachments</a></li>
+				</ul>
+			</div>
+
+		</apex:outputPanel>
+
+		<!-- Tabs and main body content -->
+	    <div role="main" class="ui-content" style="padding:0px 2px; 0px; 2px;">  
+
+			<!-- Action bar -->    
+			<div class="actionBar" >    
+				<ul class="nav nav-pills center-pills">
+					<li>
+						<a class="btn btn-default" data-toggle="modal" data-target="#attachmentModal" >
+							<span class="glyphicon glyphicon-paperclip"></span> Attachment
+						</a>
+					</li>
+					<li>
+						<a class="btn btn-default" href="#">
+							<span class="glyphicon glyphicon-link"></span> Owner
+						</a>
+					</li> 
+					<li>
+						<a class="btn btn-default" href="#">
+							<span class="glyphicon glyphicon-comment"></span> Comment
+						</a>
+					</li>
+				</ul>
+			</div>
+
+			<div class="tab-content">
+				<!-- details tab -->
+		        <div class="tab-pane active" id="details">          
+		        
+		              <apex:outputPanel id="details">
+		                 <div id="detail-example">
+		                      <h2>Demo: Actual attachment upload is disabled on this developer org</h2>
+		                      <section>
+		                          <label class="field-label">Account Name</label>
+		                          <span class="field-value"><apex:outputText value="{!Account.Name}"/></span>
+		                          <br/>
+		                      </section>
+		                      <section>
+		                          <label class="field-label">Account Type</label>
+		                          <span class="field-value"><apex:outputText value="{!Account.Type}"/></span>
+		                          <br/>
+		                      </section>		                    
+		                  </div><br/><br/><br/>
+		              </apex:outputPanel>
+		                 
+		        </div>
+
+				<!-- attachments tab -->
+		        <div class="tab-pane" id="attachments">
+		          <apex:outputPanel layout="block" id="attachmentPanel">
+		            <apex:outputPanel rendered="{!Attachments.size=0}">
+		              <div class="alert alert-warning">              
+		                There are no attachments associated with this record. 
+		              </div>
+		            </apex:outputPanel>
+
+		            <!-- Bootstrapsf1 card -->
+		            <div class="card-list">
+
+		              <apex:repeat value="{!Attachments}" var="a">
+		                <div class="card" onclick="redirectToURL('{!URLFOR($Action.Attachment.Download,a.id)}');">
+
+		                  <table style="height:100%;width:100%;">
+		                    <tr>
+		                      <td style="width:95%;">             
+		                        <div class="card-heading">
+		                          {!a.Name}
+		                        </div>
+		                        <ul class="card-detail card-detail-labels">                        
+		                          <li>
+		                            <label class="card-detail-label">Created</label>
+		                            <span class="card-detail-value">{!attachmentDateFormat[a.id]}</span>
+		                          </li>
+		                          <li>
+		                            <label class="card-detail-label">From</label>
+		                            <span class="card-detail-value">{!a.Owner.Name}</span>
+		                          </li>          
+		                          <br/>
+		                        </ul>
+		                      </td>
+		                      <td style="width:5%;margin-right:0%;font-size:150%">
+		                          &gt;
+		                      </td>
+		                    </tr>
+		                  </table>
+
+		                </div>
+		              </apex:repeat>
+
+		            </div>
+		          </apex:outputPanel> 
+
+		        </div> <!-- close attachments -->
+
+		    </div>
+
+			<!-- attachment modal - Using IFrame because there are limitations to using the inputFile tag. -->
+			<div id="attach">
+				<div class="modal fade" id="attachmentModal" tabindex="-1" role="dialog" aria-labelledby="attachmentModalLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h4 class="modal-title">Add Attachment</h4>
+							</div>
+
+							<div class="modal-body">                        
+
+								<!-- putting the apex:inputfile inside an iframe could be necessary if you have a more complex page
+								due to the limitations of using the inputfile tag -->
+								<iframe id="attachmentIFrame" frameborder="0" height="280px" width="270" src="/apex/AttachmentUpload?ParentId={!Account.id}"></iframe>
+
+							</div>
+
+							<div class="modal-footer">
+
+								<!-- this button will tell the child page within the iframe to run a function to upload the attachment -->
+								<button type="button" class="btn btn-primary" onclick="document.getElementById('attachmentIFrame').contentWindow.processAttachment();">Submit</button>
+								
+								<!-- this button will refresh the list of attachments and navigate to the attachments tab -->
+								<button type="button" class="btn btn-default" data-dismiss="modal" onclick="refreshAttachments();">Close</button>
+
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>	
+
+		<apex:actionFunction name="refreshAttachments" action="{!RefreshAttachments}" reRender="attachmentPanel" oncomplete="showNavTab('attachments'); return false;"/>
+
+	</apex:form>
+</apex:page>
