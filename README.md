@@ -9,7 +9,7 @@ There is one solution out there (using an ActionRegion tag to wrap your buttons/
 
 I also didn't want to redirect the page, so I needed a nice modal where user uploads attachment (like I had before) but they don't know it's through an IFrame.
 
-<strong>KEYS to the solution:</strong>
+<strong>KEYS to the solution:</strong> 
 
   AccountDetail page contains an IFrame with id = "attachmentIFrame"
     This page also contains the submit button as part of the modal. It fires a javascript function from within the iframe to insert the attachment. 
